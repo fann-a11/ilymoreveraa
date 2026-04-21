@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Vera Nanda Mayriza</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0b132b; 
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* --- Efek Zoom Out Love Awal (Kembali Pink) --- */
+        #zoomHeart {
+            position: fixed;
+            z-index: 100;
+            display: none;
+            color: #ff9eaa; 
+            font-size: 10px;
+            animation: heartZoomOut 2s forwards ease-in-out;
+        }
+
+        @keyframes heartZoomOut {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(100); opacity: 0.5; }
+            100% { transform: scale(200); opacity: 0; display: none; }
+        }
+        
+        /* Overlay untuk menutup layar */
+        #transitionOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ff9eaa;
+            z-index: 10;
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        /* Partikel Putih di BELAKANG teks */
+        #particleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; 
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        #endingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0b132b;
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            padding: 20px;
+        }
+
+        #endingOverlay h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: #ff9eaa;
+            margin-bottom: 20px;
+        }
+
+        /* --- OVERLAY BARU UNTUK PESAN MAAF --- */
+        #maafOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0b132b;
+            z-index: 60; /* Di atas segalanya */
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            padding: 30px;
+        }
+
+        #maafOverlay h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            color: #ff9eaa;
+            margin-bottom: 15px;
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 10;
+            background: rgba(128, 0, 0, 0.4); 
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 158, 170, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .login-container h2 {
+            font-family: 'Dancing Script', cursive;
+            color: #ff9eaa;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 2px solid #ff9eaa;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        /* Container Slide (z-index 2 agar di atas partikel) */
+        .slider-container {
+            position: relative;
+            z-index: 2;
+            background: rgba(128, 0, 0, 0.4); 
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 158, 170, 0.3); 
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            height: 85vh;
+            max-height: 700px;
+            display: none; 
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .slides { flex-grow: 1; position: relative; width: 100%; height: 100%; }
+        
+        .slide {
+            position: absolute; width: 100%; height: 100%; padding: 30px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; opacity: 0; 
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            visibility: hidden;
+        }
+        .slide.active { opacity: 1; transform: scale(1) translateY(0); visibility: visible; }
+
+        h1 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: #ff9eaa; margin-bottom: 15px; }
+        p { font-size: 0.95rem; line-height: 1.5; margin-bottom: 10px; }
+        .highlight { color: #ff9eaa; font-weight: 600; }
+        
+        .photo-container { 
+            width: 100%; 
+            max-width: 250px; 
+            aspect-ratio: 4/3; 
+            border-radius: 10px; 
+            overflow: hidden; 
+            margin-bottom: 15px; 
+            border: 3px solid #ff9eaa; 
+        }
+        .photo-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- FOTO GESER (CAROUSEL) UNTUK MEMORY LANE --- */
+        .memory-carousel {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            overflow-x: auto;
+            padding: 10px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch; /* Biar mulus di HP */
+        }
+        
+        /* Sembunyikan scrollbar agar terlihat rapi */
+        .memory-carousel::-webkit-scrollbar {
+            display: none; 
+        }
+        
+        .memory-carousel img {
+            height: 40vh; /* Sesuaikan tinggi agar proporsional di layar */
+            max-height: 350px;
+            aspect-ratio: 9/16; /* Ukuran vertikal */
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #ff9eaa;
+            scroll-snap-align: center;
+            flex-shrink: 0;
+        }
+
+        .controls { display: flex; justify-content: space-between; padding: 15px 30px; background: rgba(0,0,0,0.2); }
+        button { background-color: #ff9eaa; color: #0b132b; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: 0.3s; margin: 5px; }
+        button:hover { background-color: white; transform: translateY(-3px); }
+        button:disabled { opacity: 0.3; cursor: not-allowed; }
+        
+        .error-msg { color: #ff6b6b; font-size: 0.85rem; display: none; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="musik.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="transitionOverlay"></div>
+
+    <div id="zoomHeart">❤</div>
+    <canvas id="particleCanvas"></canvas>
+
+    <div id="endingOverlay">
+        <h2>Semoga Bahagia Selamanya</h2>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 20px;">
+            <button onclick="restartApp()">Baca Ulang</button>
+            <button onclick="showMaaf()" style="background-color: white; color: #ff9eaa;">Pesan Maaf Ku</button>
+        </div>
+    </div>
+
+    <div id="maafOverlay">
+        <h2>Maafkan Aku...</h2>
+        <p><i>"Di hari yang spesial ini, selain ngucapin selamat ulang tahun, aku juga mau minta maaf buat semua salah dan kurangku..."</i></p>
+        <p style="margin-bottom: 30px;">(Kamu bisa ubah atau tambahin teks ini di dalam codingnya)</p>
+        <button onclick="restartFromMaaf()">Tutup & Ulang</button>
+    </div>
+
+    <div class="login-container" id="loginBox">
+        <h2>Halo Vera</h2>
+        <p style="font-size: 0.9rem; margin-bottom: 15px;">Masukkan password untuk kejutan:</p>
+        <input type="password" id="passInput" placeholder="Password...">
+        <p class="error-msg" id="errorTxt">Wah, password-nya salah nih!</p>
+        <button onclick="handleLogin()">Buka Surat</button>
+    </div>
+
+    <div class="slider-container" id="mainApp">
+        <div class="slides">
+            <div class="slide active">
+                <div class="photo-container">
+                    <img src="perr.jpg" alt="Vera">
+                </div>
+                <h1>Happy Birthday<br>Vera Nanda Mayriza</h1>
+                <p>Di hari yang spesial ini, aku pengen kamu tau kalo kehadiran kamu adalah anugrah yang luar biasa.</p>
+            </div>
+            
+            <div class="slide">
+                <p>Bagi aku kamu tuh bukan sekedar orang yang ngedampingin aku, tapi kamu tu udah jadi standar keindahan dari segala keindahan.</p>
+                <p><span class="highlight">You are the sun of my life.</span></p>
+            </div>
+
+            <div class="slide">
+                <p><i>"Aku bakal tetep setia sama kamu, ga peduli berapa banyak waktu yang harus berlalu. Aku bakal selalu milih buat nunggu kamu."</i></p>
+            </div>
+
+            <div class="slide">
+                <p>Semoga di usia ke-17 ini, impian kamu dikabulin sama Allah. Keep strong, berdoa terus yaa!</p>
+            </div>
+
+            <div class="slide">
+                <div class="photo-container">
+                    <img src="perr.jpg" alt="Vera">
+                </div>
+                <p>Happy Birthday, my dearest Vera. Tetep jadi orang yang baik ya...</p>
+                <p class="signature" style="font-family: 'Dancing Script'; font-size: 1.5rem; color: #ff9eaa;">(arpan)</p>
+            </div>
+
+            <div class="slide">
+                <h1 style="font-size: 1.8rem;">Memory Lane</h1>
+                <p>Geser untuk melihat momen kita...</p>
+                <div class="memory-carousel">
+                    <img src="memori1.jpg" alt="1">
+                    <img src="memori2.jpg" alt="2">
+                    <img src="memori3.jpg" alt="3">
+                    <img src="memori4.jpg" alt="4">
+                    <img src="memori5.jpg" alt="5">
+                    <img src="memori6.jpg" alt="6">
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="photo-container" style="aspect-ratio: 3/4; max-width: 400px;">
+                    <img src="along.jpg" alt="Vera 3:4">
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="prevBtn" onclick="moveSlide(-1)" disabled>Kembali</button>
+            <button id="nextBtn" onclick="moveSlide(1)">Lanjut</button>
+        </div>
+    </div>
+
+    <script>
+        const passBenar = "2";
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+        let animationActive = false;
+
+        function handleLogin() {
+            const input = document.getElementById('passInput').value;
+            if(input.toLowerCase() === passBenar) {
+                document.getElementById('loginBox').style.opacity = '0';
+                
+                document.getElementById('bgMusic').play().catch(error => {
+                    console.log("Autoplay audio dicegah oleh browser. Pengguna harus klik tombol.");
+                });
+
+                setTimeout(() => {
+                    document.getElementById('loginBox').style.display = 'none';
+                    showZoomHeart();
+                }, 500);
+            } else {
+                document.getElementById('errorTxt').style.display = 'block';
+            }
+        }
+
+        function showZoomHeart() {
+            const heart = document.getElementById('zoomHeart');
+            const overlay = document.getElementById('transitionOverlay');
+
+            heart.style.display = 'block';
+            heart.style.left = '50%';
+            heart.style.top = '50%';
+            
+            setTimeout(() => {
+                overlay.style.display = 'block';
+                setTimeout(() => { overlay.style.opacity = '1'; }, 50);
+            }, 800); 
+
+            setTimeout(() => {
+                startParticles(); 
+                canvas.style.opacity = '1';
+                document.getElementById('mainApp').style.display = 'flex';
+                heart.style.display = 'none';
+
+                overlay.style.opacity = '0';
+                setTimeout(() => { overlay.style.display = 'none'; }, 1000);
+
+            }, 1800);
+        }
+
+        function startParticles() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particlesArray = [];
+            for (let i = 0; i < 50; i++) {
+                particlesArray.push(new Heart());
+            }
+            if(!animationActive) {
+                animationActive = true;
+                animate();
+            }
+        }
+
+        class Heart {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 20;
+                this.size = Math.random() * 8 + 4;
+                this.speedY = Math.random() * 1.2 + 0.4;
+                this.opacity = Math.random() * 0.4 + 0.1;
+            }
+            update() {
+                this.y -= this.speedY;
+                if (this.y < -20) this.reset();
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.translate(this.x, this.y);
+                ctx.scale(this.size / 10, this.size / 10);
+                ctx.fillStyle = '#ffffff'; 
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-10, -10, -20, 10, 0, 25);
+                ctx.bezierCurveTo(20, 10, 10, -10, 0, 0);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particlesArray.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        function moveSlide(n) {
+            if (currentSlide === slides.length - 1 && n === 1) {
+                showEnding();
+                return;
+            }
+            slides[currentSlide].classList.remove('active');
+            currentSlide += n;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').innerText = currentSlide === slides.length - 1 ? "Selesai" : "Lanjut";
+        }
+
+        function showEnding() {
+            const ending = document.getElementById('endingOverlay');
+            ending.style.display = 'flex';
+            setTimeout(() => { ending.style.opacity = '1'; }, 100);
+        }
+
+        // --- FUNGSI MUNCULKAN HALAMAN MAAF ---
+        function showMaaf() {
+            const ending = document.getElementById('endingOverlay');
+            const maaf = document.getElementById('maafOverlay');
+            
+            ending.style.opacity = '0';
+            setTimeout(() => {
+                ending.style.display = 'none';
+                maaf.style.display = 'flex';
+                setTimeout(() => { maaf.style.opacity = '1'; }, 100);
+            }, 1000);
+        }
+
+        function restartApp() {
+            const ending = document.getElementById('endingOverlay');
+            ending.style.opacity = '0';
+            setTimeout(() => {
+                ending.style.display = 'none';
+                resetSlides();
+            }, 1000);
+        }
+
+        // --- FUNGSI RESTART DARI HALAMAN MAAF ---
+        function restartFromMaaf() {
+            const maaf = document.getElementById('maafOverlay');
+            maaf.style.opacity = '0';
+            setTimeout(() => {
+                maaf.style.display = 'none';
+                resetSlides();
+            }, 1000);
+        }
+
+        function resetSlides() {
+            currentSlide = 0;
+            slides.forEach(s => s.classList.remove('active'));
+            slides[0].classList.add('active');
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').innerText = "Lanjut";
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
